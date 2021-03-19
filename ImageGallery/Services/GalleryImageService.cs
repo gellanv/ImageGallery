@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ImageGallery.Controllers;
 using ImageGallery.Data;
 using Microsoft.AspNetCore.Http;
@@ -87,24 +88,52 @@ namespace ImageGallery.Services
 
         public async Task<ActionResult<GalleryItemDto>> GetGalleryImagesAsync(int galleryId)
         {
-            var gallery = await _context.Galleries.FindAsync(galleryId);
-            var GalleryItemDto = _mapper.Map<GalleryItemDto>(gallery);
+            // var gallery = await _context.Galleries.FindAsync(galleryId);
+            //var GalleryItemDto = _mapper.Map<GalleryItemDto>(gallery);
+
             List<GalleryImageDto> galleryImageDto = new List<GalleryImageDto>();
-            foreach (GalleryImage galleryImage in _context.GalleryImages)
-            {
-                if (galleryImage.GalleryId == galleryId)
-                {
-                    var GalleryImageDto = _mapper.Map<GalleryImageDto>(galleryImage);
-                    galleryImageDto.Add(GalleryImageDto);
-                }
-            }
-            GalleryItemDto.GalleryImagesDto = galleryImageDto;
+            Gallery context = new Gallery();
+            galleryImageDto = context.GalleryImages.Where(g => g.GalleryId == galleryId).ProjectTo<GalleryImageDto>(_mapper.ConfigurationProvider).ToList();
+
+
+
+            //foreach (GalleryImage galleryImage in _context.GalleryImages)
+            //{
+            //    if (galleryImage.GalleryId == galleryId)
+            //    {
+            //        var GalleryImageDto = _mapper.Map<GalleryImageDto>(galleryImage);
+            //        galleryImageDto.Add(GalleryImageDto);
+            //    }
+            //}
+
+
+            //;
+
+
+
+            //var configuration = new MapperConfiguration(cfg =>cfg.CreateMap<OrderLine, OrderLineDTO>().ForMember(dto => dto.Item, conf => conf.MapFrom(ol => ol.Item.Name)));
+
+            //public List<OrderLineDTO> GetLinesForOrder(int orderId)
+            //{
+            //    using (var context = new orderEntities())
+            //    {
+            //        return context.OrderLines.Where(ol => ol.OrderId == orderId)
+            //                 .ProjectTo<OrderLineDTO>(configuration).ToList();
+            //    }
+            //}
+
+
+
+
+
             if (gallery == null)
             {
                 return NotFound();
             }
             return GalleryItemDto;
         }
+
+
         public async Task<ActionResult<GalleryImageDto>> GetImageAsync(int id)
         {
             var galleryImage = await _context.GalleryImages.FindAsync(id);
