@@ -10,7 +10,8 @@ namespace ImageGallery
     [ApiController]
     public class GalleryImagesController
     {
-        IGalleryImageService _service;
+        private reaonly IGalleryImageService _service;
+        
         public GalleryImagesController(IGalleryImageService service)
         {
             _service = service;
@@ -18,37 +19,42 @@ namespace ImageGallery
 
         // POST: api/GalleryImages      //--Add a photo to the current Gallery
         [HttpPost]
-        public Task<IActionResult> PostImage(int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PostImageAsync(int galleryId, string title, IFormFile photo)
         {
-            return _service.PostImageAsync(galleryId, title, photo);
+             await _service.PostImageAsync(galleryId, title, photo);
+            return Ok();
         }
 
         // PUT: api/GalleryImages/5     //--Edit Photo
         [HttpPut("{id}")]
-        public Task<IActionResult> PutImage(int id, int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PutImageAsync(int id, int galleryId, string title, IFormFile photo)
         {
-            return _service.PutImageAsync(id, galleryId, title, photo);
+            await _service.PutImageAsync(id, galleryId, title, photo);
+            return Ok();
         }
 
         // GET: api/GalleryImages       //--Get a List Photos of Current Gallery
         [HttpGet]
-        public Task<ActionResult<GalleryItemDto>> GetGalleryImagesAsync(int galleryId)
+        public async asyncTask<ActionResult<GalleryItemDto>> GetGalleryImagesAsync(int galleryId)
         {
-            return _service.GetGalleryImagesAsync(galleryId);
+            var result = await _service.GetGalleryImagesAsync(galleryId);
+            return Ok(result);
         }
 
         // GET: api/GalleryImages/5   //--Get one photo
         [HttpGet("{id}")]
-        public Task<ActionResult<GalleryImageDto>> GetImage(int id)
+        public async Task<ActionResult<GalleryImageDto>> GetImageAsync(int id)
         {
-            return _service.GetImageAsync(id);
+            var result = await _service.GetImageAsync(id);
+            return Ok(result);
         }
 
         // DELETE: api/GalleryImages/5
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteImage(int id)
+        public async Task<IActionResult> DeleteImageAsync(int id)
         {
-            return _service.DeleteImageAsync(id);
+            await  _service.DeleteImageAsync(id);
+            return Ok();
         }
     }
 }
