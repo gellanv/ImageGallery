@@ -1,54 +1,65 @@
-﻿using ImageGallery.Data;
+﻿using ImageGallery.Controllers;
+using ImageGallery.Data;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ImageGallery
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GalleryImagesController
+    public class GalleryImagesController : BaseController
     {
-        IGalleryImageService _service;
+        private readonly IGalleryImageService _service;
         public GalleryImagesController(IGalleryImageService service)
         {
             _service = service;
         }
 
-        // POST: api/GalleryImages      //--Add a photo to the current Gallery
+        //  Add photo to the current Gallery
+        //  POST: api/GalleryImages     
         [HttpPost]
-        public Task<IActionResult> PostImage(int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PostGalleryImageAsync(int galleryId, string title, IFormFile photo)
         {
-            return _service.PostImageAsync(galleryId, title, photo);
+            await _service.PostGalleryImageAsync(galleryId, title, photo);
+            return Ok();
         }
 
-        // PUT: api/GalleryImages/5     //--Edit Photo
+        //  Edit Photo
+        //  PUT: api/GalleryImages/5     
         [HttpPut("{id}")]
-        public Task<IActionResult> PutImage(int id, int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
         {
-            return _service.PutImageAsync(id, galleryId, title, photo);
+            await _service.PutGalleryImageAsync(id, galleryId, title, photo);
+            return Ok();
         }
 
-        // GET: api/GalleryImages       //--Get a List Photos of Current Gallery
+        //  Get a List Photos of Current Gallery
+        //  GET: api/GalleryImages       
         [HttpGet]
-        public Task<ActionResult<GalleryItemDto>> GetGalleryImagesAsync(int galleryId)
+        public async Task<ActionResult<IQueryable<GalleryImageDto>>> GetGalleryImagesAsync(int galleryId)
         {
-            return _service.GetGalleryImagesAsync(galleryId);
+            var result = await _service.GetGalleryImagesAsync(galleryId);
+            return Ok(result);
         }
 
-        // GET: api/GalleryImages/5   //--Get one photo
+        //  Get one photo
+        //  GET: api/GalleryImages/5  
         [HttpGet("{id}")]
-        public Task<ActionResult<GalleryImageDto>> GetImage(int id)
+        public async Task<ActionResult<GalleryImageDto>> GetGalleryImageAsync(int id)
         {
-            return _service.GetImageAsync(id);
+            var result = await _service.GetGalleryImageAsync(id);
+            return Ok(result);
         }
 
         // DELETE: api/GalleryImages/5
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteImage(int id)
+        public async Task<IActionResult> DeleteGalleryImageAsync(int id)
         {
-            return _service.DeleteImageAsync(id);
+            await _service.DeleteGalleryImageAsync(id);
+            return Ok();
         }
     }
 }

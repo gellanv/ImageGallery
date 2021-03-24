@@ -8,7 +8,6 @@ namespace ImageGallery.Mappings
         public MappingProfile()
         {
             CreateMap<Gallery, GalleryDto>().ReverseMap();
-            CreateMap<Gallery, GalleryItemDto>().ReverseMap();
             CreateMap<GalleryImage, GalleryImageDto>().ReverseMap();
         }
     }

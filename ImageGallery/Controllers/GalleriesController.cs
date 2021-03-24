@@ -8,9 +8,9 @@ namespace ImageGallery.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GalleriesController
+    public class GalleriesController : BaseController
     {
-        IGalleryService _service;
+        private readonly IGalleryService _service;
         public GalleriesController(IGalleryService service)
         {
             _service = service;
@@ -18,30 +18,34 @@ namespace ImageGallery.Controllers
 
         // POST: api/Galleries
         [HttpPost]
-        public Task<ActionResult<GalleryDto>> PostGallery(GalleryDto galleryDto)
+        public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
         {
-            return _service.PostGalleryAsync(galleryDto);
+            await _service.PostGalleryAsync(galleryDto);
+            return Ok();
         }
 
         // PUT: api/Galleries/5
         [HttpPut("{id}")]
-        public Task<IActionResult> PutGallery(int id, GalleryDto galleryDto)
+        public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
         {
-            return _service.PutGalleryAsync(id, galleryDto);
+            await _service.PutGalleryAsync(id, galleryDto);
+            return Ok();
         }
 
         // GET: api/Galleries
         [HttpGet]
-        public IEnumerable<GalleryDto> GetGalleries()
+        public async Task<ActionResult<IEnumerable<GalleryDto>>> GetGalleriesAsync()
         {
-            return _service.GetGalleries();
+            var result = await _service.GetGalleriesAsync();
+            return Ok(result);
         }
 
         // DELETE: api/Galleries/5
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteGalleryAsync(int id)
+        public async Task<IActionResult> DeleteGalleryAsync(int id)
         {
-            return _service.DeleteGalleryAsync(id);
+            await _service.DeleteGalleryAsync(id);
+            return Ok();
         }
     }
 }

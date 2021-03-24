@@ -21,7 +21,7 @@ namespace ImageGallery
             services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
                 Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IGalleryService, ServiceGallery>();
+            services.AddTransient<IGalleryService, GalleryService>();
             services.AddTransient<IGalleryImageService, GalleryImageService>();
 
             services.AddAutoMapper(typeof(Startup));
@@ -33,6 +33,10 @@ namespace ImageGallery
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
             }
             app.UseSwagger();
 

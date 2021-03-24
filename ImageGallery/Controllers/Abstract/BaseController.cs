@@ -6,13 +6,13 @@ namespace ImageGallery.Controllers
 {
     public abstract class BaseController : ControllerBase
     {
-        protected readonly IMapper _mapper;
-        protected readonly ApplicationDbContext _context;
-
+        protected readonly IMapper Mapper;
+        protected readonly ApplicationDbContext Context;
+        public BaseController() { }
         public BaseController(ApplicationDbContext context, IMapper mapper)
         {
-            _mapper = mapper;
-            _context = context;
+            Mapper = mapper;
+            Context = context;
         }
     }
 }
