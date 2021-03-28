@@ -10,7 +10,7 @@ namespace ImageGallery
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GalleryImagesController : BaseController
+    public class GalleryImagesController : ControllerBase
     {
         private readonly IGalleryImageService _service;
         public GalleryImagesController(IGalleryImageService service)

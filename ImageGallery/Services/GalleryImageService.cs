@@ -35,7 +35,6 @@ namespace ImageGallery.Services
             else
                 return BadRequest();
         }
-
         public async Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId)
         {
             var result = Context.GalleryImages
@@ -43,7 +42,6 @@ namespace ImageGallery.Services
                 .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider);
             return await Task.FromResult(result);
         }
-
         public async Task<GalleryImageDto> GetGalleryImageAsync(int id)
         {
             var result = await Context.GalleryImages
@@ -53,7 +51,7 @@ namespace ImageGallery.Services
             return result;
         }
         public async Task<IActionResult> DeleteGalleryImageAsync(int id)
-        {           
+        {
             var item = await Context.GalleryImages.
                Where(g => g.Id == id).
                SingleOrDefaultAsync();
@@ -69,7 +67,6 @@ namespace ImageGallery.Services
             }
             //return BadRequest();
         }
-
         private byte[] ConvertPhoto(IFormFile galleryPhoto)
         {
             byte[] image = null;
