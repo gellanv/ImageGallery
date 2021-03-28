@@ -53,17 +53,21 @@ namespace ImageGallery.Services
             return result;
         }
         public async Task<IActionResult> DeleteGalleryImageAsync(int id)
-        {
+        {           
             var item = await Context.GalleryImages.
-                Where(g => g.Id == id).
-                SingleOrDefaultAsync();
+               Where(g => g.Id == id).
+               SingleOrDefaultAsync();
             if (item != null)
             {
                 Context.GalleryImages.Remove(item);
                 await Context.SaveChangesAsync();
                 return Ok();
             }
-            return BadRequest();
+            else
+            {
+                throw new System.Exception("There is no GalleryImage with such id");
+            }
+            //return BadRequest();
         }
 
         private byte[] ConvertPhoto(IFormFile galleryPhoto)
