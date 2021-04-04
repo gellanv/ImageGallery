@@ -1,3 +1,4 @@
+using ImageGallery.CustomMiddleware;
 using ImageGallery.Data;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Builder;
@@ -32,11 +33,11 @@ namespace ImageGallery
         {
             if (env.IsDevelopment())
             {
-               app.UseDeveloperExceptionPage();            
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.ExtensiondCustomMiddleware();
             }
             app.UseSwagger();
 

@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using ImageGallery.Data;
-using Microsoft.AspNetCore.Mvc;
 
-namespace ImageGallery.Controllers
+namespace ImageGallery.Services.Abstract
 {
-    public abstract class BaseController : ControllerBase
+    public class BaseService
     {
         protected readonly IMapper Mapper;
         protected readonly ApplicationDbContext Context;
-        public BaseController() { }
-        public BaseController(ApplicationDbContext context, IMapper mapper)
+        public BaseService() { }
+        public BaseService(ApplicationDbContext context, IMapper mapper)
         {
             Mapper = mapper;
             Context = context;

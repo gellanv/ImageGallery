@@ -1,42 +1,57 @@
 ﻿using AutoMapper;
-using ImageGallery.Controllers;
+using AutoMapper.QueryableExtensions;
+using ImageGallery.CustomMiddleware;
 using ImageGallery.Data;
-using Microsoft.AspNetCore.Mvc;
+using ImageGallery.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryService : BaseController, IGalleryService
+    public class GalleryService : BaseService, IGalleryService
     {
         public GalleryService(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
-        public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
+        public async Task<GalleryDto> PostGalleryAsync(GalleryDto galleryDto)
         {
-            var gallery = Mapper.Map<Gallery>(galleryDto);
-            Context.Galleries.Add(gallery);
-            await Context.SaveChangesAsync();
-            return Ok(galleryDto);
+            try
+            {
+                var gallery = Mapper.Map<Gallery>(galleryDto);
+                Context.Galleries.Add(gallery);
+                await Context.SaveChangesAsync();
+                return galleryDto;
+            }
+            catch (System.Exception exeption)
+            {
+                throw new CustomHttpException(HttpStatusCode.InternalServerError, exeption.Message);
+            }
         }
-        public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
+        public async Task PutGalleryAsync(int id, GalleryDto galleryDto)
         {
             if (Context.Galleries.Any(e => e.Id == id))
             {
                 var gallery = Mapper.Map<Gallery>(galleryDto);
                 Context.Entry(gallery).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
-                return Ok();
             }
-            return BadRequest();
+            else
+                new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
         }
         public async Task<IEnumerable<GalleryDto>> GetGalleriesAsync()
         {
-            var result = Mapper.Map<Gallery[], IEnumerable<GalleryDto>>(Context.Galleries.ToArray());
-            return await Task.FromResult(result);
+            try
+            {
+                var result = Context.Galleries.ProjectTo<GalleryDto>(Mapper.ConfigurationProvider);
+                return await Task.FromResult(result);
+            }
+            catch (System.Exception exeption)
+            {
+                throw new CustomHttpException(HttpStatusCode.BadRequest, exeption.Message);
+            }
         }
-
-        public async Task<IActionResult> DeleteGalleryAsync(int id)
+        public async Task DeleteGalleryAsync(int id)
         {
             var item = await Context.Galleries
                 .Where(g => g.Id == id)
@@ -45,9 +60,9 @@ namespace ImageGallery.Services
             {
                 Context.Galleries.Remove(item);
                 await Context.SaveChangesAsync();
-                return Ok();
             }
-            return BadRequest();
+            else
+                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't Gallery with such id");
         }
     }
 }

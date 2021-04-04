@@ -1,28 +1,35 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ImageGallery.Controllers;
+using ImageGallery.CustomMiddleware;
 using ImageGallery.Data;
+using ImageGallery.Services.Abstract;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryImageService : BaseController, IGalleryImageService
+    public class GalleryImageService : BaseService, IGalleryImageService
     {
         public GalleryImageService(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
-        public async Task<IActionResult> PostGalleryImageAsync(int galleryId, string title, IFormFile photo)
+        public async Task PostGalleryImageAsync(int galleryId, string title, IFormFile photo)
         {
-            GalleryImageDto galleryImageDto = new() { GalleryId = galleryId, Title = title, Photo = ConvertPhoto(photo) };
-            var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
-            Context.GalleryImages.Add(galleryImage);
-            await Context.SaveChangesAsync();
-            return Ok();
+            try
+            {
+                GalleryImageDto galleryImageDto = new() { GalleryId = galleryId, Title = title, Photo = ConvertPhoto(photo) };
+                var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
+                Context.GalleryImages.Add(galleryImage);
+                await Context.SaveChangesAsync();
+            }
+            catch (System.Exception exeption)
+            {
+                throw new CustomHttpException(HttpStatusCode.InternalServerError, exeption.Message);
+            }
         }
-        public async Task<IActionResult> PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
+        public async Task PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
         {
             if (Context.GalleryImages.Any(e => e.Id == id))
             {
@@ -30,17 +37,23 @@ namespace ImageGallery.Services
                 var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
                 Context.Entry(galleryImage).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
-                return Ok();
             }
             else
-                return BadRequest();
+                new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
         }
         public async Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId)
         {
-            var result = Context.GalleryImages
-                .Where(g => g.GalleryId == galleryId)
-                .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider);
-            return await Task.FromResult(result);
+            try
+            {
+                var result = Context.GalleryImages
+                    .Where(g => g.GalleryId == galleryId)
+                    .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider);
+                return await Task.FromResult(result);
+            }
+            catch (System.ArgumentNullException)
+            {
+                throw new CustomHttpException(HttpStatusCode.NotFound, "Such gallery don't exist");
+            }
         }
         public async Task<GalleryImageDto> GetGalleryImageAsync(int id)
         {
@@ -48,9 +61,12 @@ namespace ImageGallery.Services
                 .Where(g => g.Id == id)
                 .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
-            return result;
+            if (result != null)
+                return result;
+            else
+                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
         }
-        public async Task<IActionResult> DeleteGalleryImageAsync(int id)
+        public async Task DeleteGalleryImageAsync(int id)
         {
             var item = await Context.GalleryImages.
                Where(g => g.Id == id).
@@ -59,13 +75,9 @@ namespace ImageGallery.Services
             {
                 Context.GalleryImages.Remove(item);
                 await Context.SaveChangesAsync();
-                return Ok();
             }
             else
-            {
-                throw new System.Exception("There is no GalleryImage with such id");
-            }
-            //return BadRequest();
+                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
         }
         private byte[] ConvertPhoto(IFormFile galleryPhoto)
         {
