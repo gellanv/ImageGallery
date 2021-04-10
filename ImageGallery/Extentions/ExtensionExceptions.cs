@@ -2,9 +2,9 @@
 
 namespace ImageGallery.CustomMiddleware
 {
-    public static class MethodCustomMiddleware
+    public static class ExtensionExceptions
     {
-        public static void ExtensiondCustomMiddleware(this IApplicationBuilder app)
+        public static void UseCustomExeptionsHandler(this IApplicationBuilder app)
         {
             app.UseMiddleware<CustomHandlingMiddleware>();
         }

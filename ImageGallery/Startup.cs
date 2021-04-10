@@ -37,7 +37,7 @@ namespace ImageGallery
             }
             else
             {
-                app.ExtensiondCustomMiddleware();
+                app.UseCustomExeptionsHandler();
             }
             app.UseSwagger();
 
