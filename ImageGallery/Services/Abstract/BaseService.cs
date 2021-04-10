@@ -3,7 +3,7 @@ using ImageGallery.Data;
 
 namespace ImageGallery.Services.Abstract
 {
-    public class BaseService
+    public abstract class BaseService
     {
         protected readonly IMapper Mapper;
         protected readonly ApplicationDbContext Context;
