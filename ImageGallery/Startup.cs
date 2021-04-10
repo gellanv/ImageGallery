@@ -1,5 +1,5 @@
-using ImageGallery.CustomMiddleware;
 using ImageGallery.Data;
+using ImageGallery.Exeptions;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

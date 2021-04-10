@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using ImageGallery.CustomMiddleware;
 using ImageGallery.Data;
+using ImageGallery.Exeptions;
 using ImageGallery.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
