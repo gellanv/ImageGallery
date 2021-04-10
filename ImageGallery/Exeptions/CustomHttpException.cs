@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ImageGallery.CustomMiddleware
+namespace ImageGallery.Exeptions
 {
     public class CustomHttpException : Exception
     {

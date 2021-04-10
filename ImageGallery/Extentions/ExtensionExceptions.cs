@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using ImageGallery.CustomMiddlewares;
+using Microsoft.AspNetCore.Builder;
 
-namespace ImageGallery.CustomMiddleware
+namespace ImageGallery.Exeptions
 {
     public static class ExtensionExceptions
     {
         public static void UseCustomExeptionsHandler(this IApplicationBuilder app)
         {
-            app.UseMiddleware<CustomHandlingMiddleware>();
+            app.UseMiddleware<ExeptionHandlingMiddleware>();
         }
     }
 }

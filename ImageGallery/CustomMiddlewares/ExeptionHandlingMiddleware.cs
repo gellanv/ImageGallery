@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ImageGallery.Exeptions;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ImageGallery.CustomMiddleware
+namespace ImageGallery.CustomMiddlewares
 {
-    public class CustomHandlingMiddleware
+    public class ExeptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
-        public CustomHandlingMiddleware(RequestDelegate next)
+        public ExeptionHandlingMiddleware(RequestDelegate next)
         {
             this.next = next;
         }
