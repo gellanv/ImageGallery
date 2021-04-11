@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Services
@@ -26,7 +25,7 @@ namespace ImageGallery.Services
             }
             catch (System.Exception exeption)
             {
-                throw new CustomHttpException(HttpStatusCode.InternalServerError, exeption.Message);
+                throw new InternalServerErrorExeption(exeption.Message);
             }
         }
         public async Task PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
@@ -39,7 +38,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
+                throw new NotFoundExeption("There isn't GalleryImage with such id");
         }
         public async Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId)
         {
@@ -52,7 +51,7 @@ namespace ImageGallery.Services
             }
             catch (System.ArgumentNullException)
             {
-                throw new CustomHttpException(HttpStatusCode.NotFound, "Such gallery don't exist");
+                throw new NotFoundExeption("Such gallery don't exist");
             }
         }
         public async Task<GalleryImageDto> GetGalleryImageAsync(int id)
@@ -64,7 +63,7 @@ namespace ImageGallery.Services
             if (result != null)
                 return result;
             else
-                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
+                throw new NotFoundExeption("There isn't GalleryImage with such id");
         }
         public async Task DeleteGalleryImageAsync(int id)
         {
@@ -77,7 +76,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
+                throw new NotFoundExeption("There isn't GalleryImage with such id");
         }
         private byte[] ConvertPhoto(IFormFile galleryPhoto)
         {

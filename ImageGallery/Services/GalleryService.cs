@@ -6,7 +6,6 @@ using ImageGallery.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Services
@@ -25,7 +24,7 @@ namespace ImageGallery.Services
             }
             catch (System.Exception exeption)
             {
-                throw new CustomHttpException(HttpStatusCode.InternalServerError, exeption.Message);
+                throw new InternalServerErrorExeption(exeption.Message);
             }
         }
         public async Task PutGalleryAsync(int id, GalleryDto galleryDto)
@@ -37,7 +36,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                new CustomHttpException(HttpStatusCode.NotFound, "There isn't GalleryImage with such id");
+                throw new NotFoundExeption("There isn't Gallery with such id");
         }
         public async Task<IEnumerable<GalleryDto>> GetGalleriesAsync()
         {
@@ -48,7 +47,7 @@ namespace ImageGallery.Services
             }
             catch (System.Exception exeption)
             {
-                throw new CustomHttpException(HttpStatusCode.BadRequest, exeption.Message);
+                throw new BadRequestException(exeption.Message);
             }
         }
         public async Task DeleteGalleryAsync(int id)
@@ -62,7 +61,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new CustomHttpException(HttpStatusCode.NotFound, "There isn't Gallery with such id");
+                throw new NotFoundExeption("There isn't Gallery with such id");
         }
     }
 }

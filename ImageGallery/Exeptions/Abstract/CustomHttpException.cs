@@ -9,7 +9,8 @@ namespace ImageGallery.Exeptions
         public CustomHttpException(HttpStatusCode statusCode, string message) : base(message)
         {
             StatusCode = statusCode;
-        }
+        }               
+
         public override string ToString()
         {
             string response = "StatusCode: " + StatusCode + ",  Message: " + Message;
