@@ -3,6 +3,7 @@ using ImageGallery.Data;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,16 +22,16 @@ namespace ImageGallery
         //  Add photo to the current Gallery
         //  POST: api/GalleryImages     
         [HttpPost]
-        public async Task<IActionResult> PostGalleryImageAsync(int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PostGalleryImageAsync([FromQuery] int galleryId, [FromQuery] string title, List<IFormFile> photos)
         {
-            await _service.PostGalleryImageAsync(galleryId, title, photo);
+            await _service.PostGalleryImageAsync(galleryId, title, photos);
             return Ok();
         }
 
         //  Edit Photo
         //  PUT: api/GalleryImages/5     
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
+        public async Task<IActionResult> PutGalleryImageAsync(int id, [FromQuery] int galleryId, [FromQuery] string title, IFormFile photo)
         {
             await _service.PutGalleryImageAsync(id, galleryId, title, photo);
             return Ok();

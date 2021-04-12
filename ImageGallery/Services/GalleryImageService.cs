@@ -4,7 +4,9 @@ using ImageGallery.Data;
 using ImageGallery.Exeptions;
 using ImageGallery.Services.Abstract;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,13 +16,16 @@ namespace ImageGallery.Services
     public class GalleryImageService : BaseService, IGalleryImageService
     {
         public GalleryImageService(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
-        public async Task PostGalleryImageAsync(int galleryId, string title, IFormFile photo)
+        public async Task PostGalleryImageAsync(int galleryId, string title, List<IFormFile> photos)
         {
             try
             {
-                GalleryImageDto galleryImageDto = new() { GalleryId = galleryId, Title = title, Photo = ConvertPhoto(photo) };
-                var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
-                Context.GalleryImages.Add(galleryImage);
+                foreach (var uploadedFoto in photos)
+                {
+                    GalleryImageDto galleryImageDto = new() { GalleryId = galleryId, Title = title, Photo = ConvertPhoto(uploadedFoto) };
+                    var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
+                    Context.GalleryImages.Add(galleryImage);
+                }
                 await Context.SaveChangesAsync();
             }
             catch (System.Exception exeption)
