@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
 using ImageGallery.Exeptions;
-using ImageGallery.Services.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +9,15 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryService : BaseService, IGalleryService
+    public class GalleryService : IGalleryService
     {
-        public GalleryService(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+        private ApplicationDbContext Context;
+        private IMapper Mapper;
+        public GalleryService(ApplicationDbContext context, IMapper mapper)
+        {
+            Context = context;
+            Mapper = mapper;
+        }
         public async Task<GalleryDto> PostGalleryAsync(GalleryDto galleryDto)
         {
             try

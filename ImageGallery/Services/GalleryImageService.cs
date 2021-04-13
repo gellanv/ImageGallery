@@ -2,9 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
 using ImageGallery.Exeptions;
-using ImageGallery.Services.Abstract;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.IO;
@@ -13,9 +11,15 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryImageService : BaseService, IGalleryImageService
+    public class GalleryImageService : IGalleryImageService
     {
-        public GalleryImageService(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+        private ApplicationDbContext Context;
+        private IMapper Mapper;
+        public GalleryImageService(ApplicationDbContext context, IMapper mapper)
+        {
+            Context = context;
+            Mapper = mapper;
+        }
         public async Task PostGalleryImageAsync(int galleryId, string title, List<IFormFile> photos)
         {
             try

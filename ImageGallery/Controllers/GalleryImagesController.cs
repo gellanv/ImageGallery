@@ -1,4 +1,4 @@
-﻿using ImageGallery.Controllers;
+﻿using AutoMapper;
 using ImageGallery.Data;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +13,11 @@ namespace ImageGallery
     [ApiController]
     public class GalleryImagesController : ControllerBase
     {
-        private readonly IGalleryImageService _service;
-        public GalleryImagesController(IGalleryImageService service)
+
+        private UnitOfWork unitOfWork;
+        public GalleryImagesController(ApplicationDbContext context, IMapper mapper)
         {
-            _service = service;
+            unitOfWork = new UnitOfWork(context, mapper);
         }
 
         //  Add photo to the current Gallery
@@ -24,7 +25,7 @@ namespace ImageGallery
         [HttpPost]
         public async Task<IActionResult> PostGalleryImageAsync([FromQuery] int galleryId, [FromQuery] string title, List<IFormFile> photos)
         {
-            await _service.PostGalleryImageAsync(galleryId, title, photos);
+            await unitOfWork.galleryImages.PostGalleryImageAsync(galleryId, title, photos);
             return Ok();
         }
 
@@ -33,7 +34,7 @@ namespace ImageGallery
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryImageAsync(int id, [FromQuery] int galleryId, [FromQuery] string title, IFormFile photo)
         {
-            await _service.PutGalleryImageAsync(id, galleryId, title, photo);
+            await unitOfWork.galleryImages.PutGalleryImageAsync(id, galleryId, title, photo);
             return Ok();
         }
 
@@ -42,7 +43,7 @@ namespace ImageGallery
         [HttpGet]
         public async Task<ActionResult<IQueryable<GalleryImageDto>>> GetGalleryImagesAsync(int galleryId)
         {
-            var result = await _service.GetGalleryImagesAsync(galleryId);
+            var result = await unitOfWork.galleryImages.GetGalleryImagesAsync(galleryId);
             return Ok(result);
         }
 
@@ -51,7 +52,7 @@ namespace ImageGallery
         [HttpGet("{id}")]
         public async Task<ActionResult<GalleryImageDto>> GetGalleryImageAsync(int id)
         {
-            var result = await _service.GetGalleryImageAsync(id);
+            var result = await unitOfWork.galleryImages.GetGalleryImageAsync(id);
             return Ok(result);
         }
 
@@ -59,7 +60,7 @@ namespace ImageGallery
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryImageAsync(int id)
         {
-            await _service.DeleteGalleryImageAsync(id);
+            await unitOfWork.galleryImages.DeleteGalleryImageAsync(id);
             return Ok();
         }
     }

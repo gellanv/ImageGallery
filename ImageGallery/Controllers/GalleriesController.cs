@@ -1,4 +1,5 @@
-﻿using ImageGallery.Data;
+﻿using AutoMapper;
+using ImageGallery.Data;
 using ImageGallery.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,17 +11,17 @@ namespace ImageGallery.Controllers
     [ApiController]
     public class GalleriesController : ControllerBase
     {
-        private readonly IGalleryService _service;
-        public GalleriesController(IGalleryService service)
+        private UnitOfWork unitOfWork;
+        public GalleriesController(ApplicationDbContext context, IMapper mapper)
         {
-            _service = service;
+            unitOfWork = new UnitOfWork(context, mapper);
         }
 
         // POST: api/Galleries
         [HttpPost]
         public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
         {
-            await _service.PostGalleryAsync(galleryDto);
+            await unitOfWork.galleries.PostGalleryAsync(galleryDto);
             return Ok();
         }
 
@@ -28,7 +29,7 @@ namespace ImageGallery.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
         {
-            await _service.PutGalleryAsync(id, galleryDto);
+            await unitOfWork.galleries.PutGalleryAsync(id, galleryDto);
             return Ok();
         }
 
@@ -36,7 +37,7 @@ namespace ImageGallery.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GalleryDto>>> GetGalleriesAsync()
         {
-            var result = await _service.GetGalleriesAsync();
+            var result = await unitOfWork.galleries.GetGalleriesAsync();
             return Ok(result);
         }
 
@@ -44,7 +45,7 @@ namespace ImageGallery.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryAsync(int id)
         {
-            await _service.DeleteGalleryAsync(id);
+            await unitOfWork.galleries.DeleteGalleryAsync(id);
             return Ok();
         }
     }
