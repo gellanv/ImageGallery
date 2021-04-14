@@ -1,6 +1,7 @@
 using ImageGallery.Data;
 using ImageGallery.Exeptions;
 using ImageGallery.Services;
+using ImageGallery.Services.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace ImageGallery
 
             services.AddTransient<IGalleryService, GalleryService>();
             services.AddTransient<IGalleryImageService, GalleryImageService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();

@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using ImageGallery.Data;
-using ImageGallery.Services;
+﻿using ImageGallery.Data;
+using ImageGallery.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,10 +13,10 @@ namespace ImageGallery
     public class GalleryImagesController : ControllerBase
     {
 
-        private UnitOfWork unitOfWork;
-        public GalleryImagesController(ApplicationDbContext context, IMapper mapper)
+        private IUnitOfWork unitOfWork;
+        public GalleryImagesController(IUnitOfWork _unitOfWork)
         {
-            unitOfWork = new UnitOfWork(context, mapper);
+            unitOfWork = _unitOfWork;
         }
 
         //  Add photo to the current Gallery

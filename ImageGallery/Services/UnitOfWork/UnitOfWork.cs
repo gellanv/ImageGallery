@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using ImageGallery.Data;
-using Microsoft.EntityFrameworkCore;
+using ImageGallery.Services.Interface;
 
 namespace ImageGallery.Services
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         protected readonly IMapper Mapper;
         protected readonly ApplicationDbContext Context;
@@ -17,7 +17,7 @@ namespace ImageGallery.Services
         private GalleryImageService galleryImageService;
         private GalleryService galleryService;
 
-        public GalleryImageService galleryImages
+        public IGalleryImageService galleryImages
         {
             get
             {
@@ -27,7 +27,7 @@ namespace ImageGallery.Services
             }
         }
 
-        public GalleryService galleries
+        public IGalleryService galleries
         {
             get
             {

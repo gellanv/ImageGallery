@@ -1,6 +1,5 @@
-﻿using AutoMapper;
-using ImageGallery.Data;
-using ImageGallery.Services;
+﻿using ImageGallery.Data;
+using ImageGallery.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,10 +10,10 @@ namespace ImageGallery.Controllers
     [ApiController]
     public class GalleriesController : ControllerBase
     {
-        private UnitOfWork unitOfWork;
-        public GalleriesController(ApplicationDbContext context, IMapper mapper)
+        private IUnitOfWork unitOfWork;
+        public GalleriesController(IUnitOfWork _unitOfWork)
         {
-            unitOfWork = new UnitOfWork(context, mapper);
+            unitOfWork = _unitOfWork;
         }
 
         // POST: api/Galleries
