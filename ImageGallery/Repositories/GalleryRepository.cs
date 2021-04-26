@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
-using ImageGallery.Exeptions;
+using ImageGallery.Exceptions;
+using ImageGallery.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryService : IGalleryService
+    public class GalleryRepository : IGalleryRepository
     {
         private ApplicationDbContext Context;
         private IMapper Mapper;
-        public GalleryService(ApplicationDbContext context, IMapper mapper)
+        public GalleryRepository(ApplicationDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
@@ -29,7 +30,7 @@ namespace ImageGallery.Services
             }
             catch (System.Exception exeption)
             {
-                throw new InternalServerErrorExeption(exeption.Message);
+                throw new InternalServerErrorException(exeption.Message);
             }
         }
         public async Task PutGalleryAsync(int id, GalleryDto galleryDto)
@@ -41,7 +42,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new NotFoundExeption("There isn't Gallery with such id");
+                throw new NotFoundException("There isn't Gallery with such id");
         }
         public async Task<IEnumerable<GalleryDto>> GetGalleriesAsync()
         {
@@ -66,7 +67,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new NotFoundExeption("There isn't Gallery with such id");
+                throw new NotFoundException("There isn't Gallery with such id");
         }
     }
 }

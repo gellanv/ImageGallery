@@ -23,10 +23,7 @@ namespace ImageGallery
             services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
                 Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IGalleryService, GalleryService>();
-            services.AddTransient<IGalleryImageService, GalleryImageService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
             services.AddSwaggerGen();

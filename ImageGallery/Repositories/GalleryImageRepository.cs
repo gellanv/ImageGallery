@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
-using ImageGallery.Exeptions;
+using ImageGallery.Exceptions;
+using ImageGallery.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -11,11 +12,12 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Services
 {
-    public class GalleryImageService : IGalleryImageService
+    public class GalleryImageRepository : IGalleryImageRepository
     {
+
         private ApplicationDbContext Context;
         private IMapper Mapper;
-        public GalleryImageService(ApplicationDbContext context, IMapper mapper)
+        public GalleryImageRepository(ApplicationDbContext context, IMapper mapper)
         {
             Context = context;
             Mapper = mapper;
@@ -34,7 +36,7 @@ namespace ImageGallery.Services
             }
             catch (System.Exception exeption)
             {
-                throw new InternalServerErrorExeption(exeption.Message);
+                throw new InternalServerErrorException(exeption.Message);
             }
         }
         public async Task PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
@@ -47,7 +49,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new NotFoundExeption("There isn't GalleryImage with such id");
+                throw new NotFoundException("There isn't GalleryImage with such id");
         }
         public async Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId)
         {
@@ -60,7 +62,7 @@ namespace ImageGallery.Services
             }
             catch (System.ArgumentNullException)
             {
-                throw new NotFoundExeption("Such gallery don't exist");
+                throw new NotFoundException("Such gallery don't exist");
             }
         }
         public async Task<GalleryImageDto> GetGalleryImageAsync(int id)
@@ -72,7 +74,7 @@ namespace ImageGallery.Services
             if (result != null)
                 return result;
             else
-                throw new NotFoundExeption("There isn't GalleryImage with such id");
+                throw new NotFoundException("There isn't GalleryImage with such id");
         }
         public async Task DeleteGalleryImageAsync(int id)
         {
@@ -85,7 +87,7 @@ namespace ImageGallery.Services
                 await Context.SaveChangesAsync();
             }
             else
-                throw new NotFoundExeption("There isn't GalleryImage with such id");
+                throw new NotFoundException("There isn't GalleryImage with such id");
         }
         private byte[] ConvertPhoto(IFormFile galleryPhoto)
         {

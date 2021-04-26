@@ -1,4 +1,5 @@
-﻿using ImageGallery.Exeptions;
+﻿using ImageGallery.Exceptions;
+using ImageGallery.Exeptions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Net;

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ImageGallery.Exeptions
+namespace ImageGallery.Exceptions
 {
     public class BadRequestException : CustomHttpException
     {
