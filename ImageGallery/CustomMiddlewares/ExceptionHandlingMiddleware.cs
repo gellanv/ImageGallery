@@ -1,5 +1,4 @@
 ﻿using ImageGallery.Exceptions;
-using ImageGallery.Exeptions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Net;
@@ -7,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.CustomMiddlewares
 {
-    public class ExeptionHandlingMiddleware
+    public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
-        public ExeptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next)
         {
             this.next = next;
         }

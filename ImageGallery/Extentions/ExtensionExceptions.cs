@@ -7,7 +7,7 @@ namespace ImageGallery.Exeptions
     {
         public static void UseCustomExeptionsHandler(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ExeptionHandlingMiddleware>();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
         }
     }
 }
