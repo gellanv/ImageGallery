@@ -6,9 +6,9 @@ namespace ImageGallery.Repositories.Interface
 {
     public interface IGalleryRepository
     {
-        Task<GalleryDto> PostGalleryAsync(GalleryDto galleryDto);
-        Task PutGalleryAsync(int id, GalleryDto galleryDto);
-        Task<IEnumerable<GalleryDto>> GetGalleriesAsync();
-        Task DeleteGalleryAsync(int id);
+        Task<GalleryDto> CreateAsync(GalleryDto galleryDto);
+        Task UpdateAsync(int id, GalleryDto galleryDto);
+        Task<IEnumerable<GalleryDto>> GetAllAsync();
+        Task DeleteAsync(int id);
     }
 }

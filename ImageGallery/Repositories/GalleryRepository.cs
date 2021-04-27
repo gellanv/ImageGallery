@@ -19,7 +19,7 @@ namespace ImageGallery.Services
             Context = context;
             Mapper = mapper;
         }
-        public async Task<GalleryDto> PostGalleryAsync(GalleryDto galleryDto)
+        public async Task<GalleryDto> CreateAsync(GalleryDto galleryDto)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace ImageGallery.Services
                 throw new InternalServerErrorException(exeption.Message);
             }
         }
-        public async Task PutGalleryAsync(int id, GalleryDto galleryDto)
+        public async Task UpdateAsync(int id, GalleryDto galleryDto)
         {
             if (Context.Galleries.Any(e => e.Id == id))
             {
@@ -44,7 +44,7 @@ namespace ImageGallery.Services
             else
                 throw new NotFoundException("There isn't Gallery with such id");
         }
-        public async Task<IEnumerable<GalleryDto>> GetGalleriesAsync()
+        public async Task<IEnumerable<GalleryDto>> GetAllAsync()
         {
             try
             {
@@ -56,7 +56,7 @@ namespace ImageGallery.Services
                 throw new BadRequestException(exeption.Message);
             }
         }
-        public async Task DeleteGalleryAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var item = await Context.Galleries
                 .Where(g => g.Id == id)

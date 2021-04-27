@@ -18,7 +18,7 @@ namespace ImageGallery.Services
         private GalleryImageRepository galleryImageRepository;
         private GalleryRepository galleryRepository;
 
-        public IGalleryImageRepository galleryImages
+        public IGalleryImageRepository GalleryImages
         {
             get
             {
@@ -28,7 +28,7 @@ namespace ImageGallery.Services
             }
         }
 
-        public IGalleryRepository galleries
+        public IGalleryRepository Galleries
         {
             get
             {

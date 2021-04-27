@@ -20,7 +20,7 @@ namespace ImageGallery.Controllers
         [HttpPost]
         public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
         {
-            await unitOfWork.galleries.PostGalleryAsync(galleryDto);
+            await unitOfWork.Galleries.CreateAsync(galleryDto);
             return Ok();
         }
 
@@ -28,7 +28,7 @@ namespace ImageGallery.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
         {
-            await unitOfWork.galleries.PutGalleryAsync(id, galleryDto);
+            await unitOfWork.Galleries.UpdateAsync(id, galleryDto);
             return Ok();
         }
 
@@ -36,7 +36,7 @@ namespace ImageGallery.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GalleryDto>>> GetGalleriesAsync()
         {
-            var result = await unitOfWork.galleries.GetGalleriesAsync();
+            var result = await unitOfWork.Galleries.GetAllAsync();
             return Ok(result);
         }
 
@@ -44,7 +44,7 @@ namespace ImageGallery.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryAsync(int id)
         {
-            await unitOfWork.galleries.DeleteGalleryAsync(id);
+            await unitOfWork.Galleries.DeleteAsync(id);
             return Ok();
         }
     }

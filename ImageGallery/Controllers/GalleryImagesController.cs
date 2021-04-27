@@ -24,7 +24,7 @@ namespace ImageGallery
         [HttpPost]
         public async Task<IActionResult> PostGalleryImageAsync([FromQuery] int galleryId, [FromQuery] string title, List<IFormFile> photos)
         {
-            await unitOfWork.galleryImages.PostGalleryImageAsync(galleryId, title, photos);
+            await unitOfWork.GalleryImages.CreateAsync(galleryId, title, photos);
             return Ok();
         }
 
@@ -33,7 +33,7 @@ namespace ImageGallery
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryImageAsync(int id, [FromQuery] int galleryId, [FromQuery] string title, IFormFile photo)
         {
-            await unitOfWork.galleryImages.PutGalleryImageAsync(id, galleryId, title, photo);
+            await unitOfWork.GalleryImages.UpdateAsync(id, galleryId, title, photo);
             return Ok();
         }
 
@@ -42,7 +42,7 @@ namespace ImageGallery
         [HttpGet]
         public async Task<ActionResult<IQueryable<GalleryImageDto>>> GetGalleryImagesAsync(int galleryId)
         {
-            var result = await unitOfWork.galleryImages.GetGalleryImagesAsync(galleryId);
+            var result = await unitOfWork.GalleryImages.GetAllAsync(galleryId);
             return Ok(result);
         }
 
@@ -51,7 +51,7 @@ namespace ImageGallery
         [HttpGet("{id}")]
         public async Task<ActionResult<GalleryImageDto>> GetGalleryImageAsync(int id)
         {
-            var result = await unitOfWork.galleryImages.GetGalleryImageAsync(id);
+            var result = await unitOfWork.GalleryImages.GetAsync(id);
             return Ok(result);
         }
 
@@ -59,7 +59,7 @@ namespace ImageGallery
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryImageAsync(int id)
         {
-            await unitOfWork.galleryImages.DeleteGalleryImageAsync(id);
+            await unitOfWork.GalleryImages.DeleteAsync(id);
             return Ok();
         }
     }

@@ -4,7 +4,7 @@ namespace ImageGallery.Services.Interface
 {
     public interface IUnitOfWork
     {
-        IGalleryImageRepository galleryImages { get; }
-        IGalleryRepository galleries { get; }
+        IGalleryImageRepository GalleryImages { get; }
+        IGalleryRepository Galleries { get; }
     }
 }

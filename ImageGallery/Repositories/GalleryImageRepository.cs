@@ -22,7 +22,7 @@ namespace ImageGallery.Services
             Context = context;
             Mapper = mapper;
         }
-        public async Task PostGalleryImageAsync(int galleryId, string title, List<IFormFile> photos)
+        public async Task CreateAsync(int galleryId, string title, List<IFormFile> photos)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace ImageGallery.Services
                 throw new InternalServerErrorException(exeption.Message);
             }
         }
-        public async Task PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo)
+        public async Task UpdateAsync(int id, int galleryId, string title, IFormFile photo)
         {
             if (Context.GalleryImages.Any(e => e.Id == id))
             {
@@ -51,7 +51,7 @@ namespace ImageGallery.Services
             else
                 throw new NotFoundException("There isn't GalleryImage with such id");
         }
-        public async Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId)
+        public async Task<IQueryable<GalleryImageDto>> GetAllAsync(int galleryId)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace ImageGallery.Services
                 throw new NotFoundException("Such gallery don't exist");
             }
         }
-        public async Task<GalleryImageDto> GetGalleryImageAsync(int id)
+        public async Task<GalleryImageDto> GetAsync(int id)
         {
             var result = await Context.GalleryImages
                 .Where(g => g.Id == id)
@@ -76,7 +76,7 @@ namespace ImageGallery.Services
             else
                 throw new NotFoundException("There isn't GalleryImage with such id");
         }
-        public async Task DeleteGalleryImageAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var item = await Context.GalleryImages.
                Where(g => g.Id == id).

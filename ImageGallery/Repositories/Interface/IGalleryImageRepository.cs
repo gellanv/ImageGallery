@@ -8,10 +8,10 @@ namespace ImageGallery.Repositories.Interface
 {
     public interface IGalleryImageRepository
     {
-        Task PostGalleryImageAsync(int galleryId, string title, List<IFormFile> photos);
-        Task PutGalleryImageAsync(int id, int galleryId, string title, IFormFile photo);
-        Task<IQueryable<GalleryImageDto>> GetGalleryImagesAsync(int galleryId);
-        Task<GalleryImageDto> GetGalleryImageAsync(int id);
-        Task DeleteGalleryImageAsync(int id);
+        Task CreateAsync(int galleryId, string title, List<IFormFile> photos);
+        Task UpdateAsync(int id, int galleryId, string title, IFormFile photo);
+        Task<IQueryable<GalleryImageDto>> GetAllAsync(int galleryId);
+        Task<GalleryImageDto> GetAsync(int id);
+        Task DeleteAsync(int id);
     }
 }
