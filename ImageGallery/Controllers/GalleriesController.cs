@@ -1,7 +1,9 @@
-﻿using ImageGallery.Data;
-using ImageGallery.Services.Interface;
+﻿using ImageGallery.Commands;
+using ImageGallery.Data;
+using ImageGallery.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Controllers
@@ -10,41 +12,41 @@ namespace ImageGallery.Controllers
     [ApiController]
     public class GalleriesController : ControllerBase
     {
-        private IUnitOfWork unitOfWork;
-        public GalleriesController(IUnitOfWork _unitOfWork)
+        private readonly IMediator mediator;
+        public GalleriesController(IMediator _mediator)
         {
-            unitOfWork = _unitOfWork;
+            mediator = _mediator;
         }
-
         // POST: api/Galleries
         [HttpPost]
         public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
         {
-            await unitOfWork.Galleries.CreateAsync(galleryDto);
+            var command = new CreateGalleryCommand(galleryDto);
+            await mediator.Send(command);
             return Ok();
         }
-
         // PUT: api/Galleries/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
         {
-            await unitOfWork.Galleries.UpdateAsync(id, galleryDto);
+            var command = new UpdateGalleryCommand(id, galleryDto);
+            await mediator.Send(command);
             return Ok();
         }
-
         // GET: api/Galleries
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GalleryDto>>> GetGalleriesAsync()
+        public async Task<ActionResult<IQueryable<GalleryDto>>> GetGalleriesAsync()
         {
-            var result = await unitOfWork.Galleries.GetAllAsync();
+            var query = new GetAllGalleriesQuery();
+            var result = await mediator.Send(query);
             return Ok(result);
         }
-
         // DELETE: api/Galleries/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryAsync(int id)
         {
-            await unitOfWork.Galleries.DeleteAsync(id);
+            var command = new DeleteGalleryCommand(id);
+            await mediator.Send(command);
             return Ok();
         }
     }

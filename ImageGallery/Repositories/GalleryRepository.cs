@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImageGallery.Services
+namespace ImageGallery.Repositories
 {
     public class GalleryRepository : IGalleryRepository
     {
@@ -44,7 +44,7 @@ namespace ImageGallery.Services
             else
                 throw new NotFoundException("There isn't Gallery with such id");
         }
-        public async Task<IEnumerable<GalleryDto>> GetAllAsync()
+        public async Task<IQueryable<GalleryDto>> GetAllAsync()
         {
             try
             {

@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImageGallery.Services
+namespace ImageGallery.Repositories
 {
     public class GalleryImageRepository : IGalleryImageRepository
     {

@@ -1,5 +1,6 @@
 ﻿using ImageGallery.Data;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Repositories.Interface
@@ -8,7 +9,7 @@ namespace ImageGallery.Repositories.Interface
     {
         Task<GalleryDto> CreateAsync(GalleryDto galleryDto);
         Task UpdateAsync(int id, GalleryDto galleryDto);
-        Task<IEnumerable<GalleryDto>> GetAllAsync();
+        Task<IQueryable<GalleryDto>> GetAllAsync();
         Task DeleteAsync(int id);
     }
 }

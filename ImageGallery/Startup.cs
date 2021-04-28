@@ -1,7 +1,8 @@
 using ImageGallery.Data;
 using ImageGallery.Exeptions;
-using ImageGallery.Services;
-using ImageGallery.Services.Interface;
+using ImageGallery.Repositories;
+using ImageGallery.Repositories.Interface;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,8 +24,12 @@ namespace ImageGallery
             services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
                 Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IGalleryRepository, GalleryRepository>();
+            services.AddTransient<IGalleryImageRepository, GalleryImageRepository>();
+
             services.AddAutoMapper(typeof(Startup));
+            services.AddMediatR(typeof(Startup));
+
             services.AddControllers();
             services.AddSwaggerGen();
         }

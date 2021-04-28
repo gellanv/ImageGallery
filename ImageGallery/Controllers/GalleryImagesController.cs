@@ -1,5 +1,7 @@
-﻿using ImageGallery.Data;
-using ImageGallery.Services.Interface;
+﻿using ImageGallery.Commands;
+using ImageGallery.Data;
+using ImageGallery.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -12,11 +14,10 @@ namespace ImageGallery
     [ApiController]
     public class GalleryImagesController : ControllerBase
     {
-
-        private IUnitOfWork unitOfWork;
-        public GalleryImagesController(IUnitOfWork _unitOfWork)
+        private readonly IMediator mediator;
+        public GalleryImagesController(IMediator _mediator)
         {
-            unitOfWork = _unitOfWork;
+            mediator = _mediator;
         }
 
         //  Add photo to the current Gallery
@@ -24,7 +25,8 @@ namespace ImageGallery
         [HttpPost]
         public async Task<IActionResult> PostGalleryImageAsync([FromQuery] int galleryId, [FromQuery] string title, List<IFormFile> photos)
         {
-            await unitOfWork.GalleryImages.CreateAsync(galleryId, title, photos);
+            var command = new CreateGalleryImageCommand(galleryId, title, photos);
+            await mediator.Send(command);
             return Ok();
         }
 
@@ -33,7 +35,8 @@ namespace ImageGallery
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGalleryImageAsync(int id, [FromQuery] int galleryId, [FromQuery] string title, IFormFile photo)
         {
-            await unitOfWork.GalleryImages.UpdateAsync(id, galleryId, title, photo);
+            var command = new UpdateGalleryImageCommand(id, galleryId, title, photo);
+            await mediator.Send(command);
             return Ok();
         }
 
@@ -42,7 +45,8 @@ namespace ImageGallery
         [HttpGet]
         public async Task<ActionResult<IQueryable<GalleryImageDto>>> GetGalleryImagesAsync(int galleryId)
         {
-            var result = await unitOfWork.GalleryImages.GetAllAsync(galleryId);
+            var query = new GetAllGalleryImagesQuery(galleryId);
+            var result = await mediator.Send(query);
             return Ok(result);
         }
 
@@ -51,7 +55,8 @@ namespace ImageGallery
         [HttpGet("{id}")]
         public async Task<ActionResult<GalleryImageDto>> GetGalleryImageAsync(int id)
         {
-            var result = await unitOfWork.GalleryImages.GetAsync(id);
+            var query = new GetGalleryImageQuery(id);
+            var result = await mediator.Send(query);
             return Ok(result);
         }
 
@@ -59,7 +64,8 @@ namespace ImageGallery
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryImageAsync(int id)
         {
-            await unitOfWork.GalleryImages.DeleteAsync(id);
+            var command = new DeleteGalleryImageCommand(id);
+            await mediator.Send(command);
             return Ok();
         }
     }
