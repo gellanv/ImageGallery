@@ -1,7 +1,7 @@
+using FluentValidation;
+using ImageGallery.Behaviors;
 using ImageGallery.Data;
 using ImageGallery.Exeptions;
-using ImageGallery.Repositories;
-using ImageGallery.Repositories.Interface;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,11 +24,10 @@ namespace ImageGallery
             services.AddDbContext<ApplicationDbContext>(option => option.UseNpgsql(
                 Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IGalleryRepository, GalleryRepository>();
-            services.AddTransient<IGalleryImageRepository, GalleryImageRepository>();
-
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(Startup));
+            services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviors<,>));
 
             services.AddControllers();
             services.AddSwaggerGen();
