@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Behaviors
 {
-    public class ValidationBehaviors<Trequest, TResponse> : IPipelineBehavior<Trequest, TResponse> where Trequest : IRequest<TResponse>
+    public class ValidationBehaviors<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 
     {
-        private readonly IEnumerable<IValidator<Trequest>> validators;
-        public ValidationBehaviors(IEnumerable<IValidator<Trequest>> _validators)
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
+        public ValidationBehaviors(IEnumerable<IValidator<TRequest>> validators)
         {
-            validators = _validators;
+            _validators = validators;
         }
-        public Task<TResponse> Handle(Trequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            var failures = validators
+            var failures = _validators
              .Select(x => x.Validate(request))
              .SelectMany(x => x.Errors)
              .Where(x => x != null)

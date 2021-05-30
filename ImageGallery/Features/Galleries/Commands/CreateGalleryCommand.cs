@@ -1,42 +1,43 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features.Abstract;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Commands
 {
-    public class CreateGalleryCommand : IRequest
+    public class CreateGalleryCommand : IRequest<int>
     {
-        public GalleryDto GalleryDto { get; set; }
-        public CreateGalleryCommand(GalleryDto _galleryDto)
-        {
-            GalleryDto = _galleryDto;
-        }
+        public string Title { get; set; }
+        public string Description { get; set; }
 
-        public class CreateGalleryHandler : IRequestHandler<CreateGalleryCommand>
+        public class CreateGalleryHandler : BaseRequest, IRequestHandler<CreateGalleryCommand, int>
         {
-            private readonly ApplicationDbContext Context;
-            private readonly IMapper Mapper;
-            public CreateGalleryHandler(ApplicationDbContext context, IMapper mapper)
-            {
-                Context = context;
-                Mapper = mapper;
-            }
-            public async Task<Unit> Handle(CreateGalleryCommand request, CancellationToken cancellationToken)
+            public CreateGalleryHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+            public async Task<int> Handle(CreateGalleryCommand request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var gallery = Mapper.Map<Gallery>(request.GalleryDto);
+                    var gallery = Mapper.Map<Gallery>(request);
                     Context.Galleries.Add(gallery);
                     await Context.SaveChangesAsync();
-                    return Unit.Value;
+                    return gallery.Id;
                 }
                 catch (System.Exception exeption)
                 {
                     throw new InternalServerErrorException(exeption.Message);
                 }
+            }
+        }
+        public class CreateGalleryCommandValidation : AbstractValidator<CreateGalleryCommand>
+        {
+            public CreateGalleryCommandValidation()
+            {
+                RuleFor(x => x.Title).MaximumLength(50);
+                RuleFor(x => x.Description).MaximumLength(500);
             }
         }
     }

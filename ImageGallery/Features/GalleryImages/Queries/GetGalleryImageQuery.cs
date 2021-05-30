@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features;
+using ImageGallery.Features.Abstract;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -10,33 +12,23 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Queries
 {
-    public class GetGalleryImageQuery : IRequest<GalleryImageDto>
+    public class GetGalleryImageQuery : IRequest<GalleryImageModel>
     {
-        public int id { get; set; }
-        public GetGalleryImageQuery(int _id)
-        {
-            id = _id;
-        }
+        public int Id { get; set; }
 
-        public class GetGalleryImageHandler : IRequestHandler<GetGalleryImageQuery, GalleryImageDto>
+        public class GetGalleryImageHandler : BaseRequest, IRequestHandler<GetGalleryImageQuery, GalleryImageModel>
         {
-            private readonly ApplicationDbContext Context;
-            private readonly IMapper Mapper;
-            public GetGalleryImageHandler(ApplicationDbContext context, IMapper mapper)
-            {
-                Context = context;
-                Mapper = mapper;
-            }
-            public async Task<GalleryImageDto> Handle(GetGalleryImageQuery request, CancellationToken cancellationToken)
+            public GetGalleryImageHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+            public async Task<GalleryImageModel> Handle(GetGalleryImageQuery request, CancellationToken cancellationToken)
             {
                 var result = await Context.GalleryImages
-                   .Where(g => g.Id == request.id)
-                   .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider)
+                   .Where(g => g.Id == request.Id)
+                   .ProjectTo<GalleryImageModel>(Mapper.ConfigurationProvider)
                    .SingleOrDefaultAsync();
                 if (result != null)
                     return result;
                 else
-                    throw new NotFoundException("There isn't GalleryImage with such id");
+                    throw new NotFoundException("The gallery image not found!");
             }
         }
     }

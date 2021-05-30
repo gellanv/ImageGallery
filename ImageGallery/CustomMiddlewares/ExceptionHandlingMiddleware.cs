@@ -8,16 +8,16 @@ namespace ImageGallery.CustomMiddlewares
 {
     public class ExceptionHandlingMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
         public ExceptionHandlingMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next;
         }
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await next(context);
+                await _next(context);
             }
             catch (CustomHttpException customExeption)
             {
@@ -28,7 +28,7 @@ namespace ImageGallery.CustomMiddlewares
                 await HandleExceptionAsync(context, tempExeption);
             }
         }
-        private Task HandleExceptionAsync(HttpContext context, CustomHttpException customExeption)
+        private async Task HandleExceptionAsync(HttpContext context, CustomHttpException customExeption)
         {
             string result = null;
             if (customExeption is CustomHttpException)
@@ -42,15 +42,15 @@ namespace ImageGallery.CustomMiddlewares
                 result = tempCuspomExeption.ToString();
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
-            return context.Response.WriteAsync(result);
+            await context.Response.WriteAsync(result);
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception tempExeption)
+        private async Task HandleExceptionAsync(HttpContext context, Exception tempExeption)
         {
             CustomHttpException tempCuspomExeption = new(HttpStatusCode.BadRequest, tempExeption.Message);
             string result = tempCuspomExeption.ToString();
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            return context.Response.WriteAsync(result);
+            await context.Response.WriteAsync(result);
         }
     }
 }

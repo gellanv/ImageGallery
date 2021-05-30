@@ -1,45 +1,42 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features.Abstract;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Commands
 {
-    public class UpdateGalleryCommand : IRequest
+    public class UpdateGalleryCommand : IRequest<Unit>
     {
         public int Id { get; set; }
-        public GalleryDto GalleryDto { get; set; }
-        public UpdateGalleryCommand(int _id, GalleryDto _galleryDto)
-        {
-            Id = _id;
-            GalleryDto = _galleryDto;
-        }
+        public string Title { get; set; }
+        public string Description { get; set; }
 
-        public class UpdateGalleryHandler : IRequestHandler<UpdateGalleryCommand>
+        public class UpdateGalleryHandler : BaseRequest, IRequestHandler<UpdateGalleryCommand>
         {
-            private readonly ApplicationDbContext Context;
-            private readonly IMapper Mapper;
-            public UpdateGalleryHandler(ApplicationDbContext context, IMapper mapper)
-            {
-                Context = context;
-                Mapper = mapper;
-            }
+            public UpdateGalleryHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
             public async Task<Unit> Handle(UpdateGalleryCommand request, CancellationToken cancellationToken)
             {
-
-                if (Context.Galleries.Any(e => e.Id == request.Id))
-                {
-                    var gallery = Mapper.Map<Gallery>(request.GalleryDto);
-                    Context.Entry(gallery).State = EntityState.Modified;
-                    await Context.SaveChangesAsync();
-                }
-                else
-                    throw new NotFoundException("There isn't Gallery with such id");
+                var gallery = Context.Galleries.SingleOrDefault(i => i.Id == request.Id);
+                if (gallery == null)
+                    throw new NotFoundException("The gallery not found!");
+                Mapper.Map(request, gallery);
+                await Context.SaveChangesAsync();
                 return Unit.Value;
+            }
+        }
+
+        public class UpdateGalleryCommandValidation : AbstractValidator<UpdateGalleryCommand>
+        {
+            public UpdateGalleryCommandValidation()
+            {
+                RuleFor(x => x.Id).NotEmpty();
+                RuleFor(x => x.Title).MaximumLength(50);
+                RuleFor(x => x.Description).MaximumLength(500);
             }
         }
     }

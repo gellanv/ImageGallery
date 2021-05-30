@@ -1,61 +1,59 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features.Abstract;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageGallery.Commands
 {
-    public class CreateGalleryImageCommand : IRequest
+    public class CreateGalleryImageCommand : IRequest<int>
     {
-        public int GalleryId { get; set; }
         public string Title { get; set; }
-        public List<IFormFile> Photos { get; set; }
-        public CreateGalleryImageCommand(int _galleryId, string _title, List<IFormFile> _photos)
+        public int GalleryId { get; set; }
+        public byte[] Photo { get; set; }
+
+        public byte[] ConvertPhoto(IFormFile galleryPhoto)
         {
-            GalleryId = _galleryId;
-            Title = _title;
-            Photos = _photos;
-        }
-        public class CreateGalleryImageHandler : IRequestHandler<CreateGalleryImageCommand>
-        {
-            private readonly ApplicationDbContext Context;
-            private readonly IMapper Mapper;
-            public CreateGalleryImageHandler(ApplicationDbContext context, IMapper mapper)
+            byte[] image = null;
+            using (var binaryReader = new BinaryReader(galleryPhoto.OpenReadStream()))
             {
-                Context = context;
-                Mapper = mapper;
+                image = binaryReader.ReadBytes((int)galleryPhoto.Length);
             }
-            public async Task<Unit> Handle(CreateGalleryImageCommand request, CancellationToken cancellationToken)
+            return image;
+        }
+
+        public class CreateGalleryImageHandler : BaseRequest, IRequestHandler<CreateGalleryImageCommand, int>
+        {
+            public CreateGalleryImageHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+            public async Task<int> Handle(CreateGalleryImageCommand request, CancellationToken cancellationToken)
             {
+                GalleryImage galleryImage;
                 try
                 {
-                    foreach (var uploadedFoto in request.Photos)
-                    {
-                        GalleryImageDto galleryImageDto = new() { GalleryId = request.GalleryId, Title = request.Title, Photo = ConvertPhoto(uploadedFoto) };
-                        var galleryImage = Mapper.Map<GalleryImage>(galleryImageDto);
-                        Context.GalleryImages.Add(galleryImage);
-                    }
+                    galleryImage = Mapper.Map<GalleryImage>(request);
+                    Context.GalleryImages.Add(galleryImage);
                     await Context.SaveChangesAsync();
                 }
                 catch (System.Exception exeption)
                 {
                     throw new InternalServerErrorException(exeption.Message);
                 }
-                return Unit.Value;
+                return galleryImage.Id;
             }
-            private byte[] ConvertPhoto(IFormFile galleryPhoto)
+        }
+
+        public class CreateGalleryImageCommandValidation : AbstractValidator<CreateGalleryImageCommand>
+        {
+            public CreateGalleryImageCommandValidation()
             {
-                byte[] image = null;
-                using (var binaryReader = new BinaryReader(galleryPhoto.OpenReadStream()))
-                {
-                    image = binaryReader.ReadBytes((int)galleryPhoto.Length);
-                }
-                return image;
+                RuleFor(x => x.GalleryId).NotEmpty();
+                RuleFor(x => x.Title).MaximumLength(50);
+                RuleFor(x => x.Photo).NotNull();
             }
         }
     }

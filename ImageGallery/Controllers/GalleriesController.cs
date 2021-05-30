@@ -1,5 +1,5 @@
 ﻿using ImageGallery.Commands;
-using ImageGallery.Data;
+using ImageGallery.Features;
 using ImageGallery.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,41 +12,40 @@ namespace ImageGallery.Controllers
     [ApiController]
     public class GalleriesController : ControllerBase
     {
-        private readonly IMediator mediator;
-        public GalleriesController(IMediator _mediator)
+        private readonly IMediator _mediator;
+        public GalleriesController(IMediator mediator)
         {
-            mediator = _mediator;
+            _mediator = mediator;
         }
         // POST: api/Galleries
         [HttpPost]
-        public async Task<ActionResult<GalleryDto>> PostGalleryAsync(GalleryDto galleryDto)
+        public async Task<ActionResult<CreateGalleryCommand>> PostGalleryAsync([FromBody] CreateGalleryCommand command)
         {
-            var command = new CreateGalleryCommand(galleryDto);
-            await mediator.Send(command);
+            await _mediator.Send(command);
             return Ok();
         }
         // PUT: api/Galleries/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGalleryAsync(int id, GalleryDto galleryDto)
+        public async Task<IActionResult> PutGalleryAsync(int id, [FromBody] UpdateGalleryCommand command)
         {
-            var command = new UpdateGalleryCommand(id, galleryDto);
-            await mediator.Send(command);
+            command.Id = id;
+            await _mediator.Send(command);
             return Ok();
         }
         // GET: api/Galleries
         [HttpGet]
-        public async Task<ActionResult<IQueryable<GalleryDto>>> GetGalleriesAsync()
+        public async Task<ActionResult<IQueryable<GalleryModel>>> GetGalleriesAsync()
         {
             var query = new GetAllGalleriesQuery();
-            var result = await mediator.Send(query);
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
         // DELETE: api/Galleries/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryAsync(int id)
         {
-            var command = new DeleteGalleryCommand(id);
-            await mediator.Send(command);
+            var command = new DeleteGalleryCommand() { Id = id };
+            await _mediator.Send(command);
             return Ok();
         }
     }

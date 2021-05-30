@@ -1,6 +1,6 @@
-﻿namespace ImageGallery.Data
+﻿namespace ImageGallery.Features
 {
-    public class GalleryDto
+    public class GalleryModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

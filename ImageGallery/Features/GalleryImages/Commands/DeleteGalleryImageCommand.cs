@@ -1,5 +1,7 @@
-﻿using ImageGallery.Data;
+﻿using FluentValidation;
+using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features.Abstract;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -8,21 +10,13 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Commands
 {
-    public class DeleteGalleryImageCommand : IRequest
+    public class DeleteGalleryImageCommand : IRequest<Unit>
     {
         public int Id { get; set; }
-        public DeleteGalleryImageCommand(int id)
-        {
-            this.Id = id;
-        }
 
-        public class DeleteGalleryImageHandler : IRequestHandler<DeleteGalleryImageCommand>
+        public class DeleteGalleryImageHandler : BaseRequest, IRequestHandler<DeleteGalleryImageCommand>
         {
-            private readonly ApplicationDbContext Context;
-            public DeleteGalleryImageHandler(ApplicationDbContext context)
-            {
-                Context = context;
-            }
+            public DeleteGalleryImageHandler(ApplicationDbContext context) : base(context) { }
             public async Task<Unit> Handle(DeleteGalleryImageCommand request, CancellationToken cancellationToken)
             {
                 var item = await Context.GalleryImages.
@@ -34,8 +28,15 @@ namespace ImageGallery.Commands
                     await Context.SaveChangesAsync();
                 }
                 else
-                    throw new NotFoundException("There isn't GalleryImage with such id");
+                    throw new NotFoundException("The gallery image not found!");
                 return Unit.Value;
+            }
+        }
+        public class DeleteGalleryImageCommandValidation : AbstractValidator<DeleteGalleryImageCommand>
+        {
+            public DeleteGalleryImageCommandValidation()
+            {
+                RuleFor(x => x.Id).NotEmpty();
             }
         }
     }

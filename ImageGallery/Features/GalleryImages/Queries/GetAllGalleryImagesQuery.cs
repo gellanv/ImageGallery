@@ -2,6 +2,8 @@
 using AutoMapper.QueryableExtensions;
 using ImageGallery.Data;
 using ImageGallery.Exceptions;
+using ImageGallery.Features;
+using ImageGallery.Features.Abstract;
 using MediatR;
 using System.Linq;
 using System.Threading;
@@ -9,34 +11,25 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Queries
 {
-    public class GetAllGalleryImagesQuery : IRequest<IQueryable<GalleryImageDto>>
+    public class GetAllGalleryImagesQuery : IRequest<IQueryable<GalleryImageModel>>
     {
-        public int galleryId { get; set; }
-        public GetAllGalleryImagesQuery(int _galleryId)
+        public int GalleryId { get; set; }
+
+        public class GetAllGalleryImagesHandler : BaseRequest, IRequestHandler<GetAllGalleryImagesQuery, IQueryable<GalleryImageModel>>
         {
-            galleryId = _galleryId;
-        }
-        public class GetAllGalleryImagesHandler : IRequestHandler<GetAllGalleryImagesQuery, IQueryable<GalleryImageDto>>
-        {
-            private ApplicationDbContext Context;
-            private IMapper Mapper;
-            public GetAllGalleryImagesHandler(ApplicationDbContext context, IMapper mapper)
-            {
-                Context = context;
-                Mapper = mapper;
-            }
-            public async Task<IQueryable<GalleryImageDto>> Handle(GetAllGalleryImagesQuery request, CancellationToken cancellationToken)
+            public GetAllGalleryImagesHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+            public async Task<IQueryable<GalleryImageModel>> Handle(GetAllGalleryImagesQuery request, CancellationToken cancellationToken)
             {
                 try
                 {
                     var result = Context.GalleryImages
-                        .Where(g => g.GalleryId == request.galleryId)
-                        .ProjectTo<GalleryImageDto>(Mapper.ConfigurationProvider);
+                        .Where(g => g.GalleryId == request.GalleryId)
+                        .ProjectTo<GalleryImageModel>(Mapper.ConfigurationProvider);
                     return await Task.FromResult(result);
                 }
                 catch (System.ArgumentNullException)
                 {
-                    throw new NotFoundException("Such gallery don't exist");
+                    throw new NotFoundException("Such gallery doesn't exist");
                 }
             }
         }
