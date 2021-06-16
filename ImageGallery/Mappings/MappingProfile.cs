@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using ImageGallery.Commands;
 using ImageGallery.Data;
+using ImageGallery.Features;
 
 namespace ImageGallery.Mappings
 {
@@ -7,8 +9,13 @@ namespace ImageGallery.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Gallery, GalleryDto>().ReverseMap();
-            CreateMap<GalleryImage, GalleryImageDto>().ReverseMap();
+            CreateMap<Gallery, GalleryModel>();
+            CreateMap<CreateGalleryCommand, Gallery>();
+            CreateMap<UpdateGalleryCommand, Gallery>();
+
+            CreateMap<GalleryImage, GalleryImageModel>();
+            CreateMap<UpdateGalleryImageCommand, GalleryImage>();
+            CreateMap<CreateGalleryImageCommand, GalleryImage>();
         }
     }
 }
