@@ -31,6 +31,8 @@ namespace ImageGallery
 
             services.AddControllers();
             services.AddSwaggerGen();
+
+            services.AddCors();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -42,12 +44,16 @@ namespace ImageGallery
             {
                 app.UseCustomExeptionsHandler();
             }
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200"));
+            
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            });            
 
             app.UseHttpsRedirection();
 
