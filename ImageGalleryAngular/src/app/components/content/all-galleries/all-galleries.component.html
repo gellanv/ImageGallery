@@ -1,0 +1,35 @@
+<main>
+    <section class="text-center container">
+        <div class="row">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Image gallery</h1>
+                <p>
+                    <a href="#" class="btn btn-primary">Add new gallery</a>
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col"  *ngFor="let gallery of galleries">                    
+                    <div class="card shadow-sm">                       
+                        <a routerLink="galleries/{{gallery.id}}"><img src="/api/Galleries/{{gallery.id}}/thumbnail" class="w-100 shadow-1-strong rounded mb-4"></a>
+                        <div class="card-body">
+                            <a routerLink="galleries/{{gallery.id}}">
+                                <h2>{{gallery.title}}</h2>
+                                <p class="card-text">{{gallery.description}}</p>
+                            </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="dellGallery($event)" id={{gallery.id}}>Dell</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -57,12 +57,21 @@ namespace ImageGallery
 
         //  Get one photo
         //  GET: api/GalleryImages/5  
+
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<GalleryImageModel>> GetGalleryImageAsync(int id)
+        //{
+        //    var query = new GetGalleryImageQuery() { Id = id };
+        //    var result = await _mediator.Send(query);
+        //    return Ok(result);
+        //}
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<GalleryImageModel>> GetGalleryImageAsync(int id)
+        public async Task<ActionResult> GetGalleryImageAsync(int id)
         {
             var query = new GetGalleryImageQuery() { Id = id };
-            var result = await _mediator.Send(query);
-            return Ok(result);
+            var result = await _mediator.Send(query);         
+            return File(result, "image/jpg");          
         }
 
         // DELETE: api/GalleryImages/5
