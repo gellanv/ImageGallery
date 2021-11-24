@@ -1,0 +1,30 @@
+<main>
+  <section class="text-center container">
+      <div class="row">
+          <div class="col-lg-6 col-md-8 mx-auto">
+              <h1 class="fw-light">{{gallery.title}}</h1>
+              <p>{{gallery.description}}</p>
+          </div>
+      </div>
+  </section>
+  <div class="album py-5 bg-light">
+      <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+              <div class="col" *ngFor="let img of galleryImages">                    
+                  <div class="card shadow-sm">
+                    <img src={{img.photo}} class="w-100 shadow-1-strong rounded mb-4" alt="" />  
+                    <div class="card-body">                          
+                              <h2>{{img.title}}</h2>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="dellGalleryImage($event)" id={{img.id}}>Dell</button>
+                                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</main>

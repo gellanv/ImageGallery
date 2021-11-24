@@ -40,6 +40,24 @@ namespace ImageGallery.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
+        // GET: api/Galleries/5/thumbnail
+        [HttpGet("{id}/thumbnail")]
+        public async Task<ActionResult<GalleryModel>> GetGalleryThumbnailAsync(int id)
+        {
+            var query = new GetGalleryThumbnailQuery() { Id = id };
+            var result = await _mediator.Send(query);
+            return File(result, "image/jpg");
+        }
+
+        // GET: api/Galleries/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GalleryModel>> GetGalleryAsync(int id)
+        {
+            var query = new GetGalleryQuery() { Id = id };
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
         // DELETE: api/Galleries/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGalleryAsync(int id)

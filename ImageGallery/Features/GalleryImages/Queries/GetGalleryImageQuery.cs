@@ -12,21 +12,42 @@ using System.Threading.Tasks;
 
 namespace ImageGallery.Queries
 {
-    public class GetGalleryImageQuery : IRequest<GalleryImageModel>
+    //public class GetGalleryImageQuery : IRequest<GalleryImageModel>
+    //{
+    //    public int Id { get; set; }
+
+    //    public class GetGalleryImageHandler : BaseRequest, IRequestHandler<GetGalleryImageQuery, GalleryImageModel>
+    //    {
+    //        public GetGalleryImageHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
+    //        public async Task<GalleryImageModel> Handle(GetGalleryImageQuery request, CancellationToken cancellationToken)
+    //        {
+    //            var result = await Context.GalleryImages
+    //               .Where(g => g.Id == request.Id)
+    //               .ProjectTo<GalleryImageModel>(Mapper.ConfigurationProvider)
+    //               .SingleOrDefaultAsync();
+    //            if (result != null)
+    //                return result;
+    //            else
+    //                throw new NotFoundException("The gallery image not found!");
+    //        }
+    //    }
+    //}
+
+    public class GetGalleryImageQuery : IRequest<byte[]>
     {
         public int Id { get; set; }
 
-        public class GetGalleryImageHandler : BaseRequest, IRequestHandler<GetGalleryImageQuery, GalleryImageModel>
+        public class GetGalleryImageHandler : BaseRequest, IRequestHandler<GetGalleryImageQuery, byte[]>
         {
             public GetGalleryImageHandler(ApplicationDbContext context, IMapper mapper) : base(context, mapper) { }
-            public async Task<GalleryImageModel> Handle(GetGalleryImageQuery request, CancellationToken cancellationToken)
+            public async Task<byte[]> Handle(GetGalleryImageQuery request, CancellationToken cancellationToken)
             {
                 var result = await Context.GalleryImages
                    .Where(g => g.Id == request.Id)
                    .ProjectTo<GalleryImageModel>(Mapper.ConfigurationProvider)
                    .SingleOrDefaultAsync();
-                if (result != null)
-                    return result;
+                if (result != null)                
+                    return result.Photo;
                 else
                     throw new NotFoundException("The gallery image not found!");
             }
